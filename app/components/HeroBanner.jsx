@@ -10,7 +10,7 @@ const HeroBanner = () => {
         className="absolute inset-0 bg-center bg-cover transition-transform duration-1000 hover:scale-105"
         style={{
           backgroundImage:
-            "url('https://images.pexels.com/photos/19599222/pexels-photo-19599222.jpeg')",
+            "url('https://images.pexels.com/photos/3373721/pexels-photo-3373721.jpeg')",
         }}
       ></div>
 

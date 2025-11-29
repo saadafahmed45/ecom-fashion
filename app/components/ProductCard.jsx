@@ -1,56 +1,143 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { FaStar } from "react-icons/fa";
+import {
+  FaStar,
+  FaStarHalfAlt,
+  FaRegStar,
+  FaShoppingCart,
+} from "react-icons/fa";
 
-const ProductCard = ({ id, title, price, images, creationAt }) => {
-  const isNew =
-    new Date().getTime() - new Date(creationAt).getTime() <
-    1000 * 60 * 60 * 24 * 30; // less than 30 days
+const ProductCard = ({ product }) => {
+  const {
+    id,
+    name,
+    price,
+    discountPrice,
+    discount,
+    images,
+    rating,
+    reviewCount,
+    inStock,
+    stock,
+    brand,
+    slug,
+  } = product;
 
-  const renderStars = (count = 5) => {
-    return Array.from({ length: count }, (_, i) => (
-      <FaStar key={i} className="text-yellow-400 w-4 h-4" />
-    ));
+  const renderStars = (rating) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(
+        <FaStar key={`full-${i}`} className="text-yellow-400 w-4 h-4" />
+      );
+    }
+    if (hasHalfStar) {
+      stars.push(
+        <FaStarHalfAlt key="half" className="text-yellow-400 w-4 h-4" />
+      );
+    }
+    const emptyStars = 5 - Math.ceil(rating);
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push(
+        <FaRegStar key={`empty-${i}`} className="text-yellow-400 w-4 h-4" />
+      );
+    }
+    return stars;
   };
 
   return (
-    <Link href={`/product/${id}`}>
-      <div className="group relative bg-white rounded-2xl shadow-sm hover:shadow-lg overflow-hidden cursor-pointer transition duration-300">
-        {/* Image */}
-        <div className="relative w-full h-72 overflow-hidden">
-          <img
-            src={images[0]}
-            alt={title}
-            className="w-full h-full object-cover transition-transform duration-500 transform group-hover:scale-110"
-          />
+    <div className="group relative">
+      <Link href={`/product/${id}`}>
+        <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl overflow-hidden border border-gray-100 transition duration-300 transform hover:-translate-y-1">
+          {/* Discount / Stock Badge */}
+          <div className="absolute top-3 left-3 z-20">
+            {discount > 0 && (
+              <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-lg">
+                -{discount}%
+              </span>
+            )}
+            {!inStock && (
+              <span className="bg-gray-800 text-white text-xs font-bold px-2 py-1 rounded-lg">
+                Out of Stock
+              </span>
+            )}
+          </div>
 
-          {/* Quick View Button */}
-          <button className="absolute top-3 right-3 px-3 py-1 text-sm bg-white rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            Quick View
-          </button>
+          {/* Product Image */}
+          <div className="relative w-full h-72 overflow-hidden bg-gray-100">
+            <img
+              src={images[0]}
+              alt={name}
+              className="w-full h-full object-cover transition duration-500 group-hover:scale-110"
+            />
 
-          {/* New Badge */}
-          {isNew && (
-            <span className="absolute top-3 left-3 bg-blue-600 text-white px-2 py-1 text-xs rounded-full">
-              NEW
-            </span>
-          )}
+            {/* Floating button on hover */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 opacity-0 group-hover:opacity-100 transition-all duration-300">
+              <button className="bg-white shadow-md px-4 py-2 text-sm font-medium rounded-lg flex items-center gap-2 hover:bg-gray-50">
+                <FaShoppingCart /> Quick Add
+              </button>
+            </div>
+          </div>
+
+          {/* Product Info */}
+          <div className="p-4">
+            {/* Brand */}
+            <p className="text-xs text-gray-500 uppercase tracking-wide">
+              {brand}
+            </p>
+
+            {/* Product Name */}
+            <h3 className="text-lg font-semibold mt-1 text-gray-800 line-clamp-2 min-h-[3.5rem]">
+              {name}
+            </h3>
+
+            {/* Rating */}
+            <div className="flex items-center gap-2 mt-2">
+              <div className="flex">{renderStars(rating)}</div>
+              <span className="text-sm text-gray-600">
+                {rating} ({reviewCount})
+              </span>
+            </div>
+
+            {/* Price */}
+            <div className="mt-3 flex items-center gap-3">
+              <p className="text-blue-600 font-bold text-xl">
+                ${discount > 0 ? discountPrice.toFixed(2) : price.toFixed(2)}
+              </p>
+
+              {discount > 0 && (
+                <p className="text-gray-400 line-through text-sm">
+                  ${price.toFixed(2)}
+                </p>
+              )}
+            </div>
+
+            {/* Low Stock Alert */}
+            {inStock && stock < 20 && (
+              <p className="text-orange-500 text-xs mt-2">
+                Only {stock} left — hurry!
+              </p>
+            )}
+          </div>
         </div>
+      </Link>
 
-        {/* Product Info */}
-        <div className="p-4 flex flex-col justify-between">
-          <h3 className="text-lg font-semibold text-gray-800 truncate">
-            {title}
-          </h3>
-          <div className="flex items-center mt-1">{renderStars(5)}</div>
-          <p className="text-blue-600 font-bold mt-2">${price}</p>
-          <button className="mt-4 w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-500 transition-colors duration-300">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-    </Link>
+      {/* Add to Cart button */}
+      <button
+        disabled={!inStock}
+        className={`absolute bottom-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition duration-300 px-3 py-2 rounded-lg text-sm font-bold shadow-md flex items-center gap-2 ${
+          inStock
+            ? "bg-blue-600 text-white hover:bg-blue-500"
+            : "bg-gray-300 text-gray-600 cursor-not-allowed"
+        }`}
+      >
+        <FaShoppingCart className="text-sm" />
+        {inStock ? "Add to Cart" : "Unavailable"}
+      </button>
+    </div>
   );
 };
 

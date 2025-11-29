@@ -10,8 +10,8 @@ export default function Home() {
       <HeroBanner />
       <OfferMarquee />
       <Category />
-      <FeatureProducts categoryId={10} categoryName="Clothes" />
-      <FeatureProducts categoryId={11} categoryName="Electronics" />
+      <FeatureProducts categoryId={1} categoryName="Serum" />
+      <FeatureProducts categoryId={2} categoryName="Cream" />
     </main>
   );
 }

@@ -5,47 +5,52 @@ import Link from "next/link";
 import { FaStar } from "react-icons/fa";
 import ProductCard from "./ProductCard";
 import FeaturePDCard from "./FeaturePDCard";
+import { skincareProducts } from "../api/skinData";
 
-const FeatureProducts = ({ categoryId, categoryName }) => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+const FeatureProducts = ({ categoryName }) => {
+  const products = skincareProducts?.filter(
+    (item) => item.category === categoryName
+  );
 
-  useEffect(() => {
-    const fetchCategoryProducts = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(
-          `https://api.escuelajs.co/api/v1/products?categoryId=${categoryId}&limit=8`
-        );
-        setProducts(response.data);
-      } catch (error) {
-        console.error("Error fetching category products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // const [products, setProducts] = useState([]);
+  // const [loading, setLoading] = useState(true);
 
-    if (categoryId) {
-      fetchCategoryProducts();
-    }
-  }, [categoryId]);
+  // useEffect(() => {
+  //   const fetchCategoryProducts = async () => {
+  //     setLoading(true);
+  //     try {
+  //       const response = await axios.get(
+  //         `https://api.escuelajs.co/api/v1/products?categoryId=${categoryId}&limit=8`
+  //       );
+  //       setProducts(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching category products:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-  const renderStars = (count = 5) => {
-    return Array.from({ length: count }, (_, i) => (
-      <FaStar key={i} className="text-yellow-400 w-4 h-4" />
-    ));
-  };
+  //   if (categoryId) {
+  //     fetchCategoryProducts();
+  //   }
+  // }, [categoryId]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-32">
-        <p className="text-gray-500">Loading {categoryName} products...</p>
-      </div>
-    );
-  }
+  // const renderStars = (count = 5) => {
+  //   return Array.from({ length: count }, (_, i) => (
+  //     <FaStar key={i} className="text-yellow-400 w-4 h-4" />
+  //   ));
+  // };
+
+  // if (loading) {
+  //   return (
+  //     <div className="flex items-center justify-center h-32">
+  //       <p className="text-gray-500">Loading {categoryName} products...</p>
+  //     </div>
+  //   );
+  // }
 
   return (
-    <div className="max-w-8xl mx-auto px-6 md:px-12 py-12">
+    <div className=" mx-auto px-6 md:px-16 py-14">
       <h2 className="text-3xl font-bold text-gray-800 mb-8">{categoryName}</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
