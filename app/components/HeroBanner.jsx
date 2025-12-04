@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const HeroBanner = () => {
   return (
-    <div className="relative w-full h-[90vh] lg:h-[70vh] overflow-hidden">
+    <div className="relative w-full h-[90vh] lg:h-[90vh] overflow-hidden">
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-center bg-cover transition-transform duration-1000 hover:scale-105"
